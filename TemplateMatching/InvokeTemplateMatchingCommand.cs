@@ -38,13 +38,11 @@ namespace TemplateMatching
         #endregion Parameters
 
         #region Private Data
-        private List<MatchedRect> MatchedList;
-        private int templateHeight;
-        private int templateWidth;
+        //private List<MatchedRect> MatchedList;
         #endregion Private Data
 
         #region Cmdlet Overrides
-        protected override unsafe void ProcessRecord()
+        protected override void ProcessRecord()
         {
             // File existence check
             if (!File.Exists(@Target))
@@ -58,6 +56,7 @@ namespace TemplateMatching
                 return;
             }
 
+            var MatchedList = new List<MatchedRect>();
             try
             {
                 //Load taraget and template image file
@@ -66,15 +65,32 @@ namespace TemplateMatching
                 //Prepare result image
                 using (var result = new Mat(matTarget.Height - matTemplate.Height + 1, matTarget.Width - matTemplate.Width + 1, MatType.CV_8UC1))
                 {
-                    // Invoke template matching
-                    Cv2.MatchTemplate(matTarget, matTemplate, result, TemplateMatchModes.CCoeffNormed);
 
-                    templateHeight = matTemplate.Height;
-                    templateWidth = matTemplate.Width;
-                    MatchedList = new List<MatchedRect>();
+                    var templateSize = new OpenCvSharp.Size(matTemplate.Width, matTemplate.Height);
+                    double maxVal, minVal;
+                    OpenCvSharp.Point minPoint, maxPoint;
 
-                    //Extract all matched points that has more similar than the threshold
-                    result.ForEachAsFloat(Extract);
+                    do
+                    {
+                        // Invoke template matching
+                        Cv2.MatchTemplate(matTarget, matTemplate, result, TemplateMatchModes.CCoeffNormed);
+                        // Extract most similar point
+                        Cv2.MinMaxLoc(result, out minVal, out maxVal, out minPoint, out maxPoint);
+
+                        if(maxVal < Threshold)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            var matchedRect = new MatchedRect();
+                            matchedRect.Rect = new Rect(maxPoint, templateSize);
+                            matchedRect.Similarity = (float)maxVal;
+                            MatchedList.Add(matchedRect);
+                            // Fill matched rectangle
+                            Cv2.Rectangle(matTarget, matchedRect.Rect, 0, -1);
+                        }
+                    } while (true);
                 }
             }
             catch (Exception e) {
@@ -85,18 +101,6 @@ namespace TemplateMatching
             WriteObject(MatchedList);
         }
         #endregion Cmdlet Overrides
-
-        private unsafe void Extract(float* value, int* position)
-        {
-            if (*value >= Threshold)
-            {
-                var rect = new MatchedRect();
-                rect.Rect = new Rect(position[0], position[1], templateWidth, templateHeight);
-                rect.Similarity = *value;
-                MatchedList.Add(rect);
-            }
-        }
-
     }
 
     public class MatchedRect
