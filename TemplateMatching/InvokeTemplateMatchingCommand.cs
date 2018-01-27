@@ -1,6 +1,5 @@
 ﻿using OpenCvSharp;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Management.Automation;
 
@@ -56,7 +55,6 @@ namespace TemplateMatching
                 return;
             }
 
-            var MatchedList = new List<MatchedRect>();
             try
             {
                 //Load taraget and template image file
@@ -86,7 +84,10 @@ namespace TemplateMatching
                             var matchedRect = new MatchedRect();
                             matchedRect.Rect = new Rect(maxPoint, templateSize);
                             matchedRect.Similarity = (float)maxVal;
-                            MatchedList.Add(matchedRect);
+
+                            // Return matched rectangle
+                            WriteObject(matchedRect);
+
                             // Fill matched rectangle
                             Cv2.Rectangle(matTarget, matchedRect.Rect, 0, -1);
                         }
@@ -96,9 +97,6 @@ namespace TemplateMatching
             catch (Exception e) {
                 WriteError(new ErrorRecord(e, "Template Matching Failed", ErrorCategory.OperationStopped, null));
             }
-
-            // Return object
-            WriteObject(MatchedList);
         }
         #endregion Cmdlet Overrides
     }
