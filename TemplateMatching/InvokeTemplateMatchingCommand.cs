@@ -29,11 +29,11 @@ namespace TemplateMatching
         /// <summary>
         /// This parameter specifies similarity threshold of image matching.
         /// This cmdlet returns all matched points that has more similar than the threshold.
-        /// You can specifies threshold between 0.0 to 1.0 (greater is best match)
+        /// You can specifies threshold between 0.1 to 1.0 (greater is best match)
         /// The default threshold is 0.95
         /// </summary>
         [Parameter()]
-        [ValidateRange(0.0, 1.0)]
+        [ValidateRange(0.1, 1.0)]
         public double Threshold { get; set; } = 0.95;
         #endregion Parameters
 
