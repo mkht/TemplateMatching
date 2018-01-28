@@ -1,4 +1,4 @@
-using OpenCvSharp;
+﻿using OpenCvSharp;
 using System;
 using System.IO;
 using System.Management.Automation;
@@ -36,10 +36,6 @@ namespace TemplateMatching
         public double Threshold { get; set; } = 0.95;
         #endregion Parameters
 
-        #region Private Data
-        //private List<MatchedRect> MatchedList;
-        #endregion Private Data
-
         #region Cmdlet Overrides
         protected override void ProcessRecord()
         {
@@ -63,19 +59,16 @@ namespace TemplateMatching
                 //Prepare result image
                 using (var result = new Mat(matTarget.Height - matTemplate.Height + 1, matTarget.Width - matTemplate.Width + 1, MatType.CV_8UC1))
                 {
-
                     var templateSize = new OpenCvSharp.Size(matTemplate.Width, matTemplate.Height);
-                    double maxVal, minVal;
-                    OpenCvSharp.Point minPoint, maxPoint;
 
                     do
                     {
                         // Invoke template matching
                         Cv2.MatchTemplate(matTarget, matTemplate, result, TemplateMatchModes.CCoeffNormed);
                         // Extract most similar point
-                        Cv2.MinMaxLoc(result, out minVal, out maxVal, out minPoint, out maxPoint);
+                        Cv2.MinMaxLoc(result, out double minVal, out double maxVal, out Point minPoint, out Point maxPoint);
 
-                        if(maxVal < Threshold)
+                        if (maxVal < Threshold)
                         {
                             break;
                         }
