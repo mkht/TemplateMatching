@@ -18,7 +18,7 @@ $module.CmdletToExport = @(
 $module.FunctionsToExport = @()
 $module.AliasesToExport = @()
 
-$private:moduleManufest = @{
+$private:moduleManifest = @{
     Path                   = $module.Path
     Guid                   = $module.guid
     Author                 = $module.Author
@@ -33,4 +33,4 @@ $private:moduleManufest = @{
     AliasesToExport        = $module.AliasesToExport
     RequiredAssemblies     = $module.RequreAssemblies
 }
-New-ModuleManifest @moduleManufest -Verbose
+New-ModuleManifest @moduleManifest -Verbose
