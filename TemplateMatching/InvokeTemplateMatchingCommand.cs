@@ -1,4 +1,4 @@
-﻿using OpenCvSharp;
+using OpenCvSharp;
 using System;
 using System.IO;
 using System.Management.Automation;
@@ -88,8 +88,14 @@ namespace TemplateMatching
                             // Return matched rectangle
                             WriteObject(matchedRect);
 
-                            // Fill matched rectangle
-                            Cv2.Rectangle(matTarget, matchedRect.Rect, 0, -1);
+                            // Fill matched rectangle as random
+                            Rect fillRect = matchedRect.Rect;
+                            fillRect.Inflate(Convert.ToInt32(fillRect.Width * -0.2), Convert.ToInt32(fillRect.Height * -0.2));
+                            using (var matRandom = new Mat(fillRect.Size, matTarget.Type()))
+                            {
+                                Cv2.Randu(matRandom, new Scalar(0, 0, 0), new Scalar(255, 255, 255));
+                                matTarget[fillRect] = matRandom;
+                            }
                         }
                     } while (true);
                 }
