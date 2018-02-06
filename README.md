@@ -4,6 +4,12 @@ TemplateMatching
 Powershell cmdlet for template matching.  
 You can find out where the template image is in the target image.
 
+## Install
+You can install from [PowerShell Gallery](https://www.powershellgallery.com/packages/TemplateMatching).
+```PowerShell
+Install-Module -Name TemplateMatching
+```
+
 ## Cmdlet
 * Invoke-TemplateMatching
 
