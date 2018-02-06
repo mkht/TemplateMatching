@@ -48,7 +48,7 @@ Rect                             Similarity
 
 The template image found in the target image.  
 The coordinate of the image is `(x=720, y=101)`.  
-Similarity is `0.9999997`, it's nearly equal `1`. that indicates complete match.
+Similarity is `0.9999997`, it's nearly equal `1`. that indicates perfect match.
 
 ----
 ## License
